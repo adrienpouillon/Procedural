@@ -24,4 +24,4 @@ MonoBehaviour:
   _minDeepth: 100
   _maxDeepth: 100
   _difficulty: 0
-  _roomNumber: 0
+  _roomNumber: 200
