@@ -44,3 +44,6 @@ public class MapSO : ScriptableObject
         _roomNumber = 0;
     }
 }
+/* min area
+min room
+*/

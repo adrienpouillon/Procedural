@@ -9,10 +9,10 @@ public class RoomSO : ScriptableObject
     public Color _gizmo_color;
 
     [Header("Size")]
-    public int _minHeight;
-    public int _maxHeight;
     public int _minWidth;
     public int _maxWidth;
+    public int _minHeight;
+    public int _maxHeight;
     public int _minDeepth;
     public int _maxDeepth;
 
