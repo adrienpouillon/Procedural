@@ -9,9 +9,6 @@ public class GenerateDungeon2 : MonoBehaviour
     [Header("Config")]
     [SerializeField, ReadOnly] List<Partionning> _partionningValidList;
     [SerializeField] List<RoomSO> _listRoom;
-    [SerializeField] float _padding;
-    [SerializeField] int _maxSize;
-    [SerializeField] Vector3 _minSize;
     [SerializeField] GameObject _prefabEmpty;
 
     [Header("Seed")]
@@ -142,15 +139,11 @@ public class GenerateDungeon2 : MonoBehaviour
 
     void Reset()
     {
-        _padding = 0;
-        _minSize = new Vector3(1f,1f,1f);
-
         _minValueSeed = int.MinValue;
         _maxValueSeed = int.MaxValue;
 
         _seed = Random.Range(_minValueSeed, _maxValueSeed);
         _useRandomSeed = false;
-        //_roomValidList = new List<Room>();
     }
 
     public Vector3 Padding(Vector3 scale, float padding)
@@ -190,7 +183,6 @@ public class GenerateDungeon2 : MonoBehaviour
         }
 
         ObjectCube mapPS;
-        MapSO ob = _mapSO;
         ObjectCube minMapPS = new ObjectCube();
         minMapPS.SetXYZWHD(_mapSO._x, _mapSO._y, _mapSO._z, _mapSO._minWidth, _mapSO._minHeight, _mapSO._minDeepth);
 
@@ -211,11 +203,11 @@ public class GenerateDungeon2 : MonoBehaviour
         Partionning map = new Partionning();
         map._myCube = mapPS;
         Debug.Log(mapPS + "  xyz " + mapPS._xyz + "  whd " + mapPS._whd);
-        CreateGameObject(ref map, _prefabEmpty, _padding, gameObject.transform);
+        CreateGameObject(ref map, _prefabEmpty, _mapSO._padding, gameObject.transform);
         ObjectCube roomPS = mapPS;
         Vector3 roomWHD = mapPS._whd;
         roomPS.SetWHD(roomWHD/100f);
-        CreateChild(map, roomPS, _listRoom[0], _padding, _minSize);
+        CreateChild(map, roomPS, _listRoom[0], _mapSO._padding, _mapSO._minSize);
 
         _partionningValidList.Add(map);
     }

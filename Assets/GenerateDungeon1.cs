@@ -11,7 +11,6 @@ public class GenerateDungeon1 : MonoBehaviour
     [SerializeField] int _attempt;
     [SerializeField, ReadOnly] int _attemptUse;
     [SerializeField] List<RoomSO> _listRoom;
-    [SerializeField] float _padding;
 
     [Header("Seed")]
     [SerializeField] private int _seed;
@@ -141,7 +140,6 @@ public class GenerateDungeon1 : MonoBehaviour
 
     void Reset()
     {
-        _padding = 0;
         _attempt = 200;
 
         _minValueSeed = int.MinValue;
@@ -246,7 +244,7 @@ public class GenerateDungeon1 : MonoBehaviour
                 minMaxRoom.Set(minRoomPS, maxRoomPS);
 
                 ObjectCube roomPS = RandomValue(minMaxRoom);
-                bool isCreate = CreateGameObject(ref room, roomPS, roomSO._prefab, _padding, gameObject.transform);
+                bool isCreate = CreateGameObject(ref room, roomPS, roomSO._prefab, _mapSO._padding, gameObject.transform);
                 _attemptUse++;
                 if (isCreate)
                 {
