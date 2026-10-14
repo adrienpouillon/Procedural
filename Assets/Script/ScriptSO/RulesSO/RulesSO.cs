@@ -117,7 +117,7 @@ public class RulesSO : ScriptableObject
                 z = third;
             }
         }
-        return new Vector3(rept, rept, rept);
+        return new Vector3(x, y, z);
     }
 
 
