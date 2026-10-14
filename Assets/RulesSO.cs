@@ -10,10 +10,32 @@ public class RulesSO : ScriptableObject
 
     [SerializeField] public List<Vector3> _neighborList;
 
+    [SerializeField] public List<Vector3> _neighborDownList;
+    [SerializeField] public List<Vector3> _neighborCenterList;
+    [SerializeField] public List<Vector3> _neighborUpList;
+
     protected void Reset()
     {
         _valueBoolean = true;
         _valueInt = 4;
+    }
+
+    void BuildNeighBor()
+    {
+        _neighborList = new List<Vector3>();
+
+        AddAllNeighBor(ref _neighborList, _neighborDownList);
+        AddAllNeighBor(ref _neighborList, _neighborCenterList);
+        AddAllNeighBor(ref _neighborList, _neighborUpList);
+    }
+
+    void AddAllNeighBor(ref List<Vector3> neighborList, List<Vector3> toAddList)
+    {
+        int lenght = neighborList.Count;
+        for (int i = 0; i < lenght; i++)
+        {
+            _neighborList.Add(toAddList[i]);
+        }
     }
 
     public virtual bool ConditionNeighborStates(Cell neighbor)
