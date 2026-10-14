@@ -11,7 +11,7 @@ public class GenerateDungeon1 : MonoBehaviour
     [SerializeField] int _attempt;
     [SerializeField, ReadOnly] int _attemptUse;
     [SerializeField] List<RoomSO> _listRoom;
-    [SerializeField] int _padding;
+    [SerializeField] float _padding;
 
     [Header("Seed")]
     [SerializeField] private int _seed;
@@ -162,6 +162,7 @@ public class GenerateDungeon1 : MonoBehaviour
     public Vector3 Padding(Vector3 scale, float padding)
     {
         scale.x = scale.x + padding;
+        scale.y = scale.y + padding;
         scale.z = scale.z + padding;
         return scale;
     }
@@ -257,7 +258,7 @@ public class GenerateDungeon1 : MonoBehaviour
         }
     }
 
-    bool CreateGameObject(ref Room room, ObjectCube objectPS, GameObject prefab, int padding, Transform transformParent)
+    bool CreateGameObject(ref Room room, ObjectCube objectPS, GameObject prefab, float padding, Transform transformParent)
     {
         Vector3 pos = objectPS.CalculePosCenter();
         Vector3 scale = objectPS._whd;

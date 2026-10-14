@@ -2,13 +2,14 @@ using EasyButtons;
 using NaughtyAttributes;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class GenerateDungeon2 : MonoBehaviour
 {
     [Header("Config")]
     [SerializeField, ReadOnly] List<Partionning> _partionningValidList;
     [SerializeField] List<RoomSO> _listRoom;
-    [SerializeField] int _padding;
+    [SerializeField] float _padding;
     [SerializeField] int _maxSize;
     [SerializeField] Vector3 _minSize;
     [SerializeField] GameObject _prefabEmpty;
@@ -154,8 +155,9 @@ public class GenerateDungeon2 : MonoBehaviour
 
     public Vector3 Padding(Vector3 scale, float padding)
     {
-        scale.x = scale.x + padding;
-        scale.z = scale.z + padding;
+        scale.x = scale.x - padding;
+        scale.y = scale.y - padding;
+        scale.z = scale.z - padding;
         return scale;
     }
 
@@ -200,7 +202,6 @@ public class GenerateDungeon2 : MonoBehaviour
 
         mapPS = RandomValue(minMaxMap);
 
-        Debug.Log("lenght");
         int lenghtListRoom = _listRoom.Count;
         if (lenghtListRoom < 0)
         {
@@ -208,13 +209,18 @@ public class GenerateDungeon2 : MonoBehaviour
         }
 
         Partionning map = new Partionning();
+        map._myCube = mapPS;
+        Debug.Log(mapPS + "  xyz " + mapPS._xyz + "  whd " + mapPS._whd);
         CreateGameObject(ref map, _prefabEmpty, _padding, gameObject.transform);
-        CreateChild(map, mapPS, _listRoom[0], _padding, _minSize);
+        ObjectCube roomPS = mapPS;
+        Vector3 roomWHD = mapPS._whd;
+        roomPS.SetWHD(roomWHD/100f);
+        CreateChild(map, roomPS, _listRoom[0], _padding, _minSize);
 
         _partionningValidList.Add(map);
     }
 
-    void CreateChild(Partionning parent, ObjectCube myObjectCube, RoomSO room, int padding, Vector3 minSize)
+    void CreateChild(Partionning parent, ObjectCube myObjectCube, RoomSO room, float padding, Vector3 minSize)
     {
         Debug.Log("Create Child");
         Partionning my = new Partionning();
@@ -227,9 +233,42 @@ public class GenerateDungeon2 : MonoBehaviour
         bool createChild1 = false;
         bool createChild2 = false;
 
-        float randX = Random.Range(0, my._myCube._whd.x);
-        Vector3 whd1 = new Vector3(randX, my._myCube._whd.y, my._myCube._whd.z);
-        Vector3 whd2 = new Vector3(my._myCube._whd.x - randX, my._myCube._whd.y, my._myCube._whd.z);
+        
+        Vector3 whd1 = Vector3.one;
+        Vector3 whd2 = Vector3.one;
+        Vector3 pos1 = Vector3.zero;
+        Vector3 pos2 = Vector3.zero;
+        float rand = 1;
+        switch (Random.Range(0, 3))
+        {
+            case 0:
+                {
+                    rand = Random.Range(0, my._myCube._whd.x);
+                    whd1 = new Vector3(rand, my._myCube._whd.y, my._myCube._whd.z);
+                    whd2 = new Vector3(my._myCube._whd.x - rand, my._myCube._whd.y, my._myCube._whd.z);
+                    pos1 = new Vector3(my._myCube._xyz.x, my._myCube._xyz.y, my._myCube._xyz.z);
+                    pos2 = new Vector3(my._myCube._xyz.x + rand, my._myCube._xyz.y, my._myCube._xyz.z);
+                    break;
+                }
+            case 1:
+                {
+                    rand = Random.Range(0, my._myCube._whd.y);
+                    whd1 = new Vector3(my._myCube._whd.x, rand, my._myCube._whd.z);
+                    whd2 = new Vector3(my._myCube._whd.x, my._myCube._whd.y - rand, my._myCube._whd.z);
+                    pos1 = new Vector3(my._myCube._xyz.x, my._myCube._xyz.y, my._myCube._xyz.z);
+                    pos2 = new Vector3(my._myCube._xyz.x, my._myCube._xyz.y + rand, my._myCube._xyz.z);
+                    break;
+                }
+            case 2:
+                {
+                    rand = Random.Range(0, my._myCube._whd.z);
+                    whd1 = new Vector3(my._myCube._whd.x, my._myCube._whd.y, rand);
+                    whd2 = new Vector3(my._myCube._whd.x, my._myCube._whd.y, my._myCube._whd.z - rand);
+                    pos1 = new Vector3(my._myCube._xyz.x, my._myCube._xyz.y, my._myCube._xyz.z);
+                    pos2 = new Vector3(my._myCube._xyz.x, my._myCube._xyz.y, my._myCube._xyz.z + rand);
+                    break;
+                }
+        }
         if (whd1.x > minSize.x && whd1.y > minSize.y && whd1.z > minSize.z)
         {
             createChild1 = true;
@@ -252,7 +291,7 @@ public class GenerateDungeon2 : MonoBehaviour
 
         if(createChild1)
         {
-            Vector3 pos1 = new Vector3(my._myCube._xyz.x, my._myCube._xyz.y, my._myCube._xyz.z);
+            
             ObjectCube objectCube = new ObjectCube();
             objectCube.SetXYZ(pos1);
             objectCube.SetWHD(whd1);
@@ -260,23 +299,33 @@ public class GenerateDungeon2 : MonoBehaviour
         }
         if (createChild2)
         {
-            Vector3 pos1 = new Vector3(my._myCube._xyz.x + randX, my._myCube._xyz.y, my._myCube._xyz.z);
             ObjectCube objectCube = new ObjectCube();
-            objectCube.SetXYZ(pos1);
-            objectCube.SetWHD(whd1);
+            objectCube.SetXYZ(pos2);
+            objectCube.SetWHD(whd2);
             CreateChild(my, objectCube, room, padding, minSize);
         }
     }
     
-    bool CreateGameObject(ref Partionning my, GameObject prefab, int padding, Transform transformParent)
+    bool CreateGameObject(ref Partionning my, GameObject prefab, float padding, Transform transformParent)
     {
-        Vector3 pos = my._myCube.CalculePosCenter();
-        Vector3 scale = my._myCube._whd;
+        Vector3 pos;
+        Vector3 scale;
+        if(prefab == _prefabEmpty)
+        {
+            pos = Vector3.zero;
+            scale = Vector3.one;
+        }
+        else
+        {
+            pos = my._myCube.CalculePosCenter();
+            scale = my._myCube._whd;
+        }
         scale = Padding(scale, padding);
 
         my._myGameObject = Instantiate(prefab, transformParent);
         my._myGameObject.transform.localPosition = pos;
-        my._myGameObject.transform.localScale = scale;
+        my._myGameObject.transform.localScale = scale;//new Vector3(scale.x / transformParent.lossyScale.x, scale.y / transformParent.lossyScale.y, scale.z / transformParent.lossyScale.z);
+        Debug.Log(my._myGameObject.transform + "  xyz " + pos + "  whd " + scale);
         return true;
         //return false;
     }
