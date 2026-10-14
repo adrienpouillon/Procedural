@@ -175,13 +175,10 @@ public class GenerateDungeon3 : MonoBehaviour
     {
         if (_cellListListList != null)
         {
-            if (_useRandomSeed)
+            if(GenerateRound(ref _cellListListList, _iteration))
             {
-                _seed = Random.Range(_minValueSeed, _maxValueSeed);
+                _iteration++;
             }
-            Random.InitState(_seed);
-            _iteration++;
-            GenerateRound(ref _cellListListList, _iteration);
         }
     }
 
@@ -234,12 +231,12 @@ public class GenerateDungeon3 : MonoBehaviour
 
     }
 
-    public void GenerateRound(ref List<List<List<Cell>>> cellListListList, int round)
+    public bool GenerateRound(ref List<List<List<Cell>>> cellListListList, int round)
     {
         int lenghtListRoom = _rulesSOList.Count;
         if (lenghtListRoom <= round)
         {
-            return;
+            return false;
         }
 
         RulesSO rule = _rulesSOList[round];
@@ -266,6 +263,7 @@ public class GenerateDungeon3 : MonoBehaviour
             }
         }
         cellListListList = newCellListListList;
+        return true;
     }
 
     Cell SearchNeighbor(List<List<List<Cell>>> cellListListList, Cell my, RulesSO rule, Vector3 myIJK, Vector3 sizeListListList)
