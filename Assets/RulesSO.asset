@@ -12,3 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e4e7744925721e428afd4803e02f73d, type: 3}
   m_Name: RulesSO
   m_EditorClassIdentifier: Assembly-CSharp::RulesSO
+  _valueBoolean: 1
+  _valueInt: 4
+  _neighborList:
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 1, z: 0}
+  - {x: 0, y: 1, z: 1}
+  - {x: 1, y: 0, z: 0}
+  - {x: 1, y: 0, z: 1}
+  - {x: 1, y: 1, z: 0}
+  - {x: 1, y: 1, z: 1}
+  - {x: 0, y: 0, z: 0}

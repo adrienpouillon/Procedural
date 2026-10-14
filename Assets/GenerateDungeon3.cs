@@ -1,15 +1,14 @@
+using NaughtyAttributes;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class GenerateDungeon3 : MonoBehaviour
 {
     [Header("Config")]
-    [SerializeField] List<RulesSO> _rulesSOList;
     [SerializeField] int _goToIteration;
+    [SerializeField, ReadOnly] int _iteration;
     [SerializeField] float _randGenerate;
     [SerializeField] GameObject _prefabFill;
-    [SerializeField] GameObject _prefabEmpty;
 
     [Header("Seed")]
     [SerializeField] private int _seed;
@@ -20,6 +19,7 @@ public class GenerateDungeon3 : MonoBehaviour
     [Header("Data required")]
     [SerializeField] MapSO _mapSO;
     [SerializeField] RoomSO _roomSO;
+    [SerializeField] List<RulesSO> _rulesSOList;
 
     List<List<List<Cell>>> _cellListListList;
 
@@ -33,7 +33,7 @@ public class GenerateDungeon3 : MonoBehaviour
         {
             float padding = _generateDungeon3._mapSO._padding;
             _myGameObject = Instantiate(prefab, _generateDungeon3.gameObject.transform);
-            _myGameObject.transform.localPosition = _myCube._xyz;
+            _myGameObject.transform.position = _myCube._xyz;
             _myGameObject.transform.localScale = _myCube._whd - new Vector3(padding, padding, padding);
         }
 
@@ -179,7 +179,8 @@ public class GenerateDungeon3 : MonoBehaviour
                 _seed = Random.Range(_minValueSeed, _maxValueSeed);
             }
             Random.InitState(_seed);
-            GenerateRound();
+            _iteration++;
+            GenerateRound(ref _cellListListList, _iteration);
         }
     }
 
@@ -196,7 +197,8 @@ public class GenerateDungeon3 : MonoBehaviour
         {
             _cellListListList = new List<List<List<Cell>>>();
         }
-
+        _iteration = 0;
+        
         ObjectCube mapPS;
         ObjectCube minMapPS = new ObjectCube();
         minMapPS.SetXYZWHD(_mapSO._x, _mapSO._y, _mapSO._z, _mapSO._minWidth, _mapSO._minHeight, _mapSO._minDeepth);
@@ -222,6 +224,8 @@ public class GenerateDungeon3 : MonoBehaviour
 
         roomPS = RandomValue(minMaxRoom);
 
+
+        Debug.Log(roomPS._whd);
         GridRandomValue(ref _cellListListList, roomPS._whd, mapPS._whd, _randGenerate);
 
 
@@ -229,15 +233,15 @@ public class GenerateDungeon3 : MonoBehaviour
 
     }
 
-    public void GenerateR()
+    public void GenerateRound(ref List<List<List<Cell>>> cellListListList, int round)
     {
         int lenghtListRoom = _rulesSOList.Count;
-        if (lenghtListRoom < 0)
+        if (lenghtListRoom <= round)
         {
             return;
         }
 
-        Vector3 sizeMap = new Vector3(_cellListListList.Count, _cellListListList[0].Count, _cellListListList[0][0].Count);
+        Vector3 sizeMap = new Vector3(cellListListList.Count, cellListListList[0].Count, cellListListList[0][0].Count);
         int lenghtI = (int)sizeMap.z;
         for (int i = 0; i < lenghtI; i++)
         {
@@ -247,11 +251,35 @@ public class GenerateDungeon3 : MonoBehaviour
                 int lenghtK = (int)sizeMap.x;
                 for (int k = 0; k < lenghtK; k++)
                 {
-                    //_cellListListList[x][y][z];
-
+                    Cell currente = cellListListList[i][j][k];
+                    SearchNeighbor(ref cellListListList, currente, _rulesSOList[round]);
                 }
             }
         }
+    }
+
+    void SearchNeighbor(ref List<List<List<Cell>>> cellListListList, Cell my, RulesSO rule)
+    {
+        List<Vector3> neighborList = rule._neighborList;
+        int number = 0;
+        foreach(Vector3 ijk in neighborList)
+        {
+            Cell neighbor = cellListListList[(int)ijk.x][(int)ijk.y][(int)ijk.z];
+            if (rule.ConditionNeighborStates(neighbor))
+            {
+                number++;
+            }
+        }
+
+        if(rule.ConditionNeighborNumber(number))
+        {
+            my._myGameObject.SetActive(rule.SetGood());
+        }
+        else
+        {
+            my._myGameObject.SetActive(rule.SetBad());
+        }
+    }
 
     void GridRandomValue(ref List<List<List<Cell>>> cellListListList, Vector3 sizeCell, Vector3 sizeMap, float rand)
     {
@@ -270,13 +298,12 @@ public class GenerateDungeon3 : MonoBehaviour
                     cell._myCube.SetXYZ(new Vector3(k,j,i));
                     cell._myCube.SetWHD(sizeCell);
                     cell._generateDungeon3 = this;
-                    if (Random.Range(0, 1) >= rand)
+                    cell.Create(_prefabFill);
+                    cell._myGameObject.SetActive(false);
+                    float randValue = Random.Range(0f, 1f);
+                    if (randValue >= rand)
                     {
-                        cell.Create(_prefabFill);
-                    }
-                    else
-                    {
-                        cell.Create(_prefabEmpty);
+                        cell._myGameObject.SetActive(true);
                     }
                     cellListListList[i][j].Add(cell);
                 }

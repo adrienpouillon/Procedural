@@ -20,9 +20,9 @@ MonoBehaviour:
   _x: 0
   _y: 0
   _z: 0
-  _minHeight: 100
-  _maxHeight: 100
-  _minWidth: 100
-  _maxWidth: 100
-  _minDeepth: 100
-  _maxDeepth: 100
+  _minHeight: 10
+  _maxHeight: 10
+  _minWidth: 10
+  _maxWidth: 10
+  _minDeepth: 10
+  _maxDeepth: 10

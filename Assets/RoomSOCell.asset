@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RoomSO
   _styleId: Room
   _gizmo_color: {r: 1, g: 1, b: 1, a: 1}
-  _minWidth: 2
-  _maxWidth: 2
-  _minHeight: 6
-  _maxHeight: 6
-  _minDeepth: 6
-  _maxDeepth: 6
+  _minWidth: 1
+  _maxWidth: 1
+  _minHeight: 1
+  _maxHeight: 1
+  _minDeepth: 1
+  _maxDeepth: 1
   _prefab: {fileID: 0}
   _tilling: 4
