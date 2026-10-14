@@ -176,6 +176,7 @@ public class GenerateDungeon2 : MonoBehaviour
                     partionning.Destroy();
                 }
             }
+            _partionningValidList = new List<Partionning>();
         }
         else
         {

@@ -1,6 +1,7 @@
 using NaughtyAttributes;
 using System.Collections.Generic;
 using UnityEngine;
+using static GenerateDungeon3;
 
 public class GenerateDungeon3 : MonoBehaviour
 {
@@ -192,6 +193,7 @@ public class GenerateDungeon3 : MonoBehaviour
             {
                 DestroyGrid(_cellListListList);
             }
+            _cellListListList = new List<List<List<Cell>>>();
         }
         else
         {
@@ -225,7 +227,6 @@ public class GenerateDungeon3 : MonoBehaviour
         roomPS = RandomValue(minMaxRoom);
 
 
-        Debug.Log(roomPS._whd);
         GridRandomValue(ref _cellListListList, roomPS._whd, mapPS._whd, _randGenerate);
 
 
@@ -241,37 +242,58 @@ public class GenerateDungeon3 : MonoBehaviour
             return;
         }
 
-        Vector3 sizeMap = new Vector3(cellListListList.Count, cellListListList[0].Count, cellListListList[0][0].Count);
+        RulesSO rule = _rulesSOList[round];
+        rule.BuildNeighBor();
+
+        List<List<List<Cell>>> newCellListListList = new List<List<List<Cell>>>();
+
+        Vector3 sizeMap = new Vector3(cellListListList[0][0].Count, cellListListList[0].Count, cellListListList.Count);
         int lenghtI = (int)sizeMap.z;
         for (int i = 0; i < lenghtI; i++)
         {
+            newCellListListList.Add(new List<List<Cell>>());
             int lenghtJ = (int)sizeMap.y;
             for (int j = 0; j < lenghtJ; j++)
             {
+                newCellListListList[i].Add(new List<Cell>());
                 int lenghtK = (int)sizeMap.x;
                 for (int k = 0; k < lenghtK; k++)
                 {
                     Cell currente = cellListListList[i][j][k];
-                    SearchNeighbor(ref cellListListList, currente, _rulesSOList[round]);
+                    Cell newCell = SearchNeighbor(cellListListList, currente, rule, new Vector3(i,j,k), sizeMap);
+                    newCellListListList[i][j].Add(newCell);
                 }
             }
         }
+        cellListListList = newCellListListList;
     }
 
-    void SearchNeighbor(ref List<List<List<Cell>>> cellListListList, Cell my, RulesSO rule)
+    Cell SearchNeighbor(List<List<List<Cell>>> cellListListList, Cell my, RulesSO rule, Vector3 myIJK, Vector3 sizeListListList)
     {
-        List<Vector3> neighborList = rule._neighborList;
+        List<Vector3> neighborList = rule.NeighBorList;
         int number = 0;
-        foreach(Vector3 ijk in neighborList)
+        int indexNull = -1;
+
+        
+        foreach (Vector3 ijk in neighborList)
         {
-            Cell neighbor = cellListListList[(int)ijk.x][(int)ijk.y][(int)ijk.z];
-            if (rule.ConditionNeighborStates(neighbor))
+            int z = (int)ijk.x + (int)myIJK.x;
+            int y = (int)ijk.y + (int)myIJK.y;
+            int x = (int)ijk.z + (int)myIJK.z;
+            if (indexNull < x && x < sizeListListList.x && indexNull < y && y < sizeListListList.y && indexNull < z && z < sizeListListList.z)
             {
-                number++;
+                Cell neighbor = cellListListList[z][y][x];
+                bool iss = rule.ConditionNeighborStates(neighbor);
+                if (iss)
+                {
+                    number++;
+                }
             }
         }
 
-        if(rule.ConditionNeighborNumber(number))
+        bool isss = rule.ConditionNeighborNumber(number);
+        Debug.Log(isss + " : " + number);
+        if (isss)
         {
             my._myGameObject.SetActive(rule.SetGood());
         }
@@ -279,6 +301,7 @@ public class GenerateDungeon3 : MonoBehaviour
         {
             my._myGameObject.SetActive(rule.SetBad());
         }
+        return my;
     }
 
     void GridRandomValue(ref List<List<List<Cell>>> cellListListList, Vector3 sizeCell, Vector3 sizeMap, float rand)

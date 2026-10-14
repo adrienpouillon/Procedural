@@ -187,6 +187,7 @@ public class GenerateDungeon1 : MonoBehaviour
                     room.Destroy();
                 }
             }
+            _roomValidList = new List<Room>();
         }
         else
         {
