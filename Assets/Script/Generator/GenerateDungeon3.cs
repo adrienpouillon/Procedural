@@ -1,4 +1,5 @@
 using NaughtyAttributes;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static GenerateDungeon3;
@@ -23,6 +24,13 @@ public class GenerateDungeon3 : MonoBehaviour
     [SerializeField] List<RulesSO> _rulesSOList;
 
     List<List<List<Cell>>> _cellListListList;
+
+    public Action OnGridUpdate;
+
+    public List<List<List<Cell>>> CellListListList
+    {
+        get { return _cellListListList; }
+    }
 
     public struct Cell
     {
