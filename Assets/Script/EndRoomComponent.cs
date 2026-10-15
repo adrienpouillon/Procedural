@@ -5,9 +5,10 @@ public class EndRoomComponent : EntityComponent
     protected override void OnLaunchGame()
     {
         RandomCell();
+        color = Color.blue;
     }
 
-    protected override void OnUpdate()
+    protected override void OnDraw()
     {
 
     }
@@ -20,11 +21,6 @@ public class EndRoomComponent : EntityComponent
     protected override void OnExitGrid()
     {
         RandomCell();
-    }
-
-    protected override void OnDraw()
-    {
-
     }
 
     protected override void OnQuitGame()

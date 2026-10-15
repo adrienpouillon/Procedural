@@ -7,16 +7,18 @@ public class PlayerComponent : EntityComponent
     protected override void OnLaunchGame()
     {
         RandomCell();
+        color = Color.green;
     }
 
-    protected override void OnUpdate()
+    protected override void OnDraw()
     {
         if(_endRoom != null && _endRoom.Start)
         {
             Cell currentCellEndRoom = _endRoom.CurrentCell;
             if (IsSameCell(currentCellEndRoom, CurrentCell))
             {
-                //end
+                _generateDungeon3.GenerateR();
+                _endRoom.RandomCell();
             }
         }
     }
@@ -29,11 +31,6 @@ public class PlayerComponent : EntityComponent
     protected override void OnExitGrid()
     {
         RandomCell();
-    }
-
-    protected override void OnDraw()
-    {
-
     }
 
     protected override void OnQuitGame()

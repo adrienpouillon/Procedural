@@ -7,10 +7,12 @@ public class EntityComponent : MonoBehaviour
     protected Vector3 _ijk;
     protected List<List<List<Cell>>> _cellListListList = null;
     bool _isPlug = false;
+    bool _start = false;
+    protected Color color;
 
     [Header("component Required")]
-    [SerializeField] GenerateDungeon3 _generateDungeon3;
-    bool _start = false;
+    [SerializeField] protected GenerateDungeon3 _generateDungeon3;
+    
 
     public bool Start
     {
@@ -109,14 +111,13 @@ public class EntityComponent : MonoBehaviour
 
     }
 
-    protected void RandomCell()
+    public void RandomCell()
     {
         bool isCorrecte = false;
         while (isCorrecte == false)
         {
             Vector3 size = GetSizeCell();
             _ijk = new Vector3(Random.Range(0, (int)size.x), Random.Range(0, (int)size.y), Random.Range(0, (int)size.z));
-
             isCorrecte = IsValid() == EnumIsValid.Good;
         }
     }
@@ -151,7 +152,7 @@ public class EntityComponent : MonoBehaviour
 
         OnDraw();
 
-        Gizmos.color = UnityEngine.Color.green;
+        Gizmos.color = color;
         ObjectCube entityCube = currentCell._myCube;
         Gizmos.DrawWireCube(entityCube._xyz, entityCube._whd);
         transform.position = entityCube._xyz;
@@ -193,9 +194,9 @@ public class EntityComponent : MonoBehaviour
         Vector3 size = GetSizeCell();
         if ((ijk.x < 0f || ijk.y < 0f || ijk.z < 0f) || (ijk.x >= size.x || ijk.y >= size.y || ijk.z >= size.z))
         {
-            return _cellListListList[(int)_ijk.x][(int)_ijk.y][(int)_ijk.z];
+            return null;
         }
-        return null;
+        return _cellListListList[(int)_ijk.x][(int)_ijk.y][(int)_ijk.z];
     }
 
 
