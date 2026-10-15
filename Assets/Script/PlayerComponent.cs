@@ -1,63 +1,110 @@
-using System.Collections.Generic;
-using System.Drawing;
-using System.Reflection;
-using Unity.Multiplayer.PlayMode;
 using UnityEngine;
 using static GenerateDungeon3;
 
-public class PlayerComponent : MonoBehaviour
+public class PlayerComponent : EntityComponent
 {
-    [SerializeField] GenerateDungeon3 generateDungeon3;
-    Vector3 _ijk;
-    List<List<List<Cell>>> _rCellListListList;
-
-    void Reset()
+    [SerializeField] private EndRoomComponent _endRoom;
+    protected override void OnLaunchGame()
     {
-        _ijk = new Vector3(-1, -1, -1);
+        RandomCell();
     }
 
-    [EasyButtons.Button("Start Game")]
-    void LaunchGame()
+    protected override void OnUpdate()
     {
-        bool isIncorrecte = true;
-        Cell currentPlayer;
-        while (isIncorrecte)
+        if(_endRoom != null && _endRoom.Start)
         {
-            Vector3 size = new Vector3(_rCellListListList[0][0].Count, _rCellListListList[0].Count, _rCellListListList.Count);
-            _ijk = new Vector3(Random.Range(0, (int)size.x), Random.Range(0, (int)size.y), Random.Range(0, (int)size.z));
-
-            currentPlayer = _rCellListListList[(int)_ijk.x][(int)_ijk.y][(int)_ijk.z];
-            if (currentPlayer._myGameObject.activeSelf == true)
+            Cell currentCellEndRoom = _endRoom.CurrentCell;
+            if (IsSameCell(currentCellEndRoom, CurrentCell))
             {
-                isIncorrecte = false;
+                //end
             }
         }
     }
 
-    bool IsValid()
+    protected override void OnUpdateGrid()
     {
-        
 
-        currentPlayer = _rCellListListList[(int)_ijk.x][(int)_ijk.y][(int)_ijk.z];
-        if (currentPlayer._myGameObject.activeSelf == true)
-        {
-            isIncorrecte = false;
-        }
+    }
+
+    protected override void OnExitGrid()
+    {
+        RandomCell();
+    }
+
+    protected override void OnDraw()
+    {
+
+    }
+
+    protected override void OnQuitGame()
+    {
+
     }
 
     [EasyButtons.Button("Up")]
     void MoveUp()
     {
+        Vector3 formerIJK = _ijk;
+        _ijk = new Vector3(_ijk.x, _ijk.y + 1, _ijk.z);
+        if (IsValid() < EnumIsValid.Good)
+        {
+            _ijk = formerIJK;
+        }
+    }
 
+    [EasyButtons.Button("Forward")]
+    void MoveForward()
+    {
+        Vector3 formerIJK = _ijk;
+        _ijk = new Vector3(_ijk.x, _ijk.y, _ijk.z + 1);
+        if (IsValid() < EnumIsValid.Good)
+        {
+            _ijk = formerIJK;
+        }
+    }
+
+    [EasyButtons.Button("Left")]
+    void MoveLeft()
+    {
+        Vector3 formerIJK = _ijk;
+        _ijk = new Vector3(_ijk.x + 1, _ijk.y, _ijk.z);
+        if (IsValid() < EnumIsValid.Good)
+        {
+            _ijk = formerIJK;
+        }
+    }
+
+    [EasyButtons.Button("Right")]
+    void MoveRight()
+    {
+        Vector3 formerIJK = _ijk;
+        _ijk = new Vector3(_ijk.x - 1, _ijk.y, _ijk.z);
+        if (IsValid() < EnumIsValid.Good)
+        {
+            _ijk = formerIJK;
+        }
+    }
+
+    [EasyButtons.Button("Backward")]
+    void MoveBackward()
+    {
+        Vector3 formerIJK = _ijk;
+        _ijk = new Vector3(_ijk.x, _ijk.y, _ijk.z - 1);
+        if (IsValid() < EnumIsValid.Good)
+        {
+            _ijk = formerIJK;
+        }
     }
 
 
-
-    private void OnDrawGizmos()
+    [EasyButtons.Button("Down")]
+    void MoveDown()
     {
-        Cell currentPlayer = _rCellListListList[(int)ijk.x][(int)ijk.y][(int)ijk.z];
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position, currentPlayer._myCube._whd);
-
+        Vector3 formerIJK = _ijk;
+        _ijk = new Vector3(_ijk.x, _ijk.y - 1, _ijk.z);
+        if (IsValid() < EnumIsValid.Good)
+        {
+            _ijk = formerIJK;
+        }
     }
 }

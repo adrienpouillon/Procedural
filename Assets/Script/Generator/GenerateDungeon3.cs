@@ -32,7 +32,7 @@ public class GenerateDungeon3 : MonoBehaviour
         get { return _cellListListList; }
     }
 
-    public struct Cell
+    public class Cell
     {
         public ObjectCube _myCube;
         public GameObject _myGameObject;
@@ -159,7 +159,7 @@ public class GenerateDungeon3 : MonoBehaviour
         _minValueSeed = int.MinValue;
         _maxValueSeed = int.MaxValue;
 
-        _seed = Random.Range(_minValueSeed, _maxValueSeed);
+        _seed = UnityEngine.Random.Range(_minValueSeed, _maxValueSeed);
         _useRandomSeed = false;
 
 
@@ -172,9 +172,9 @@ public class GenerateDungeon3 : MonoBehaviour
     {
         if (_useRandomSeed)
         {
-            _seed = Random.Range(_minValueSeed, _maxValueSeed);
+            _seed = UnityEngine.Random.Range(_minValueSeed, _maxValueSeed);
         }
-        Random.InitState(_seed);
+        UnityEngine.Random.InitState(_seed);
         GenerateGrid();
     }
 
@@ -233,9 +233,8 @@ public class GenerateDungeon3 : MonoBehaviour
 
 
         GridRandomValue(ref _cellListListList, roomPS._whd, mapPS._whd, _randGenerate);
+        OnGridUpdate?.Invoke();
 
-
-        // GenerateR()
 
     }
 
@@ -271,6 +270,7 @@ public class GenerateDungeon3 : MonoBehaviour
             }
         }
         cellListListList = newCellListListList;
+        OnGridUpdate?.Invoke();
         return true;
     }
 
@@ -298,7 +298,6 @@ public class GenerateDungeon3 : MonoBehaviour
         }
 
         bool isss = rule.ConditionNeighborNumber(number);
-        Debug.Log(isss + " : " + number);
         if (isss)
         {
             my._myGameObject.SetActive(rule.SetGood());
@@ -329,7 +328,7 @@ public class GenerateDungeon3 : MonoBehaviour
                     cell._generateDungeon3 = this;
                     cell.Create(_prefabFill);
                     cell._myGameObject.SetActive(false);
-                    float randValue = Random.Range(0f, 1f);
+                    float randValue = UnityEngine.Random.Range(0f, 1f);
                     if (randValue >= rand)
                     {
                         cell._myGameObject.SetActive(true);
@@ -357,12 +356,12 @@ public class GenerateDungeon3 : MonoBehaviour
     ObjectCube RandomValue(MinMaxObjectCube minMaxObjectCube)
     {
         ObjectCube objectCube = new ObjectCube();
-        objectCube._xyz.x = Random.Range(minMaxObjectCube._min._xyz.x, minMaxObjectCube._max._xyz.x);
-        objectCube._xyz.y = Random.Range(minMaxObjectCube._min._xyz.y, minMaxObjectCube._max._xyz.y);
-        objectCube._xyz.z = Random.Range(minMaxObjectCube._min._xyz.z, minMaxObjectCube._max._xyz.z);
-        objectCube._whd.x = Random.Range(minMaxObjectCube._min._whd.x, minMaxObjectCube._max._whd.x);
-        objectCube._whd.y = Random.Range(minMaxObjectCube._min._whd.y, minMaxObjectCube._max._whd.y);
-        objectCube._whd.z = Random.Range(minMaxObjectCube._min._whd.z, minMaxObjectCube._max._whd.z);
+        objectCube._xyz.x = UnityEngine.Random.Range(minMaxObjectCube._min._xyz.x, minMaxObjectCube._max._xyz.x);
+        objectCube._xyz.y = UnityEngine.Random.Range(minMaxObjectCube._min._xyz.y, minMaxObjectCube._max._xyz.y);
+        objectCube._xyz.z = UnityEngine.Random.Range(minMaxObjectCube._min._xyz.z, minMaxObjectCube._max._xyz.z);
+        objectCube._whd.x = UnityEngine.Random.Range(minMaxObjectCube._min._whd.x, minMaxObjectCube._max._whd.x);
+        objectCube._whd.y = UnityEngine.Random.Range(minMaxObjectCube._min._whd.y, minMaxObjectCube._max._whd.y);
+        objectCube._whd.z = UnityEngine.Random.Range(minMaxObjectCube._min._whd.z, minMaxObjectCube._max._whd.z);
         return objectCube;
     }
 }
