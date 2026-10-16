@@ -9,17 +9,15 @@ public class RoomSO : ScriptableObject
     public Color _gizmo_color;
 
     [Header("Size")]
-    public int _minWidth;
-    public int _maxWidth;
-    public int _minHeight;
-    public int _maxHeight;
-    public int _minDeepth;
-    public int _maxDeepth;
+    public float _minWidth;
+    public float _maxWidth;
+    public float _minHeight;
+    public float _maxHeight;
+    public float _minDeepth;
+    public float _maxDeepth;
 
     [Header("Prefab")]
     public GameObject _prefab;
-
-    public float _tilling;
 
     void Reset()
     {
@@ -32,7 +30,5 @@ public class RoomSO : ScriptableObject
         _maxHeight = 6;
         _minDeepth = 6;
         _maxDeepth = 6;
-
-        _tilling = 4;
     }
 }

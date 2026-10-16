@@ -17,16 +17,19 @@ public class MapSO : ScriptableObject
     [Header("Config Generator 2")]
     public Vector3 _minSize;
 
+    [Header("Config Generator 4")]
+
+
     [Header("Tranform")]
     public int _x;
     public int _y;
     public int _z;
-    public int _minHeight;
-    public int _maxHeight;
-    public int _minWidth;
-    public int _maxWidth;
-    public int _minDeepth;
-    public int _maxDeepth;
+    public float _minHeight;
+    public float _maxHeight;
+    public float _minWidth;
+    public float _maxWidth;
+    public float _minDeepth;
+    public float _maxDeepth;
 
     
 

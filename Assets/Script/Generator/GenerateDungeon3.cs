@@ -2,15 +2,13 @@ using NaughtyAttributes;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static GenerateDungeon3;
 
 public class GenerateDungeon3 : MonoBehaviour
 {
     [Header("Config")]
-    [SerializeField] int _goToIteration;
     [SerializeField, ReadOnly] int _iteration;
     [SerializeField] float _randGenerate;
-    [SerializeField] GameObject _prefabFill;
+    [SerializeField] GameObject _prefab;
 
     [Header("Seed")]
     [SerializeField] private int _seed;
@@ -163,7 +161,6 @@ public class GenerateDungeon3 : MonoBehaviour
         _useRandomSeed = false;
 
 
-        _goToIteration = 0;
         _randGenerate = 0.5f;
     }
 
@@ -326,7 +323,7 @@ public class GenerateDungeon3 : MonoBehaviour
                     cell._myCube.SetXYZ(new Vector3(k,j,i));
                     cell._myCube.SetWHD(sizeCell);
                     cell._generateDungeon3 = this;
-                    cell.Create(_prefabFill);
+                    cell.Create(_prefab);
                     cell._myGameObject.SetActive(false);
                     float randValue = UnityEngine.Random.Range(0f, 1f);
                     if (randValue >= rand)
